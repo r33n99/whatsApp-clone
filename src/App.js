@@ -1,57 +1,43 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
+import React from "react";
+import Chat from "./components/Chat";
+import Sidebar from "./components/Sidebar";
+import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom";
+import Login from "./components/Login";
+import { useStateValue } from "./StateProvider";
 
 function App() {
+  const [{ user }, dispatch] = useStateValue();
+  const screenWidth = window.screen.width;
+  console.log(screenWidth)
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
-    </div>
+    <>
+      {screenWidth <= 768 ? (
+        <div className="mobile">
+        <h1>Мобильная версия не предназначена для данного сайта</h1>
+        <img src="images/oops.jpg" alt="oops" />
+        </div>
+      ) : (
+        <div className="app">
+          {!user ? (
+            <Login />
+          ) : (
+            <div className="app__body">
+              <Router>
+                <Sidebar />
+                <Switch>
+                  <Route path="/rooms/:roomId">
+                    <Chat />
+                  </Route>
+                  <Route path="/">
+                    <Chat />
+                  </Route>
+                </Switch>
+              </Router>
+            </div>
+          )}
+        </div>
+      )}
+    </>
   );
 }
 
